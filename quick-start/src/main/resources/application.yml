@@ -1,0 +1,11 @@
+spring:
+    application:
+        name: quick-start
+    profiles:
+        active: dev
+    ai:
+        deepseek:
+            api-key: xxxxxx
+            chat:
+                options:
+                    model: deepseek-reasoner
