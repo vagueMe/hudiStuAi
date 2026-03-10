@@ -9,3 +9,11 @@ spring:
             chat:
                 options:
                     model: deepseek-reasoner
+        dashscope:
+            api-key: XXXXXX
+            chat:
+                options:
+                    model: qwen3-max
+#            base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+#            base-url: https://qw.deepseek.com/api/v1/chat/completions
+
