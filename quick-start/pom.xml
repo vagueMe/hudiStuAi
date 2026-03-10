@@ -26,6 +26,11 @@
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-starter-model-deepseek</artifactId>
 		</dependency>
+		<!--百炼-->
+		<dependency>
+			<groupId>com.alibaba.cloud.ai</groupId>
+			<artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
+		</dependency>
 
 	</dependencies>
 
