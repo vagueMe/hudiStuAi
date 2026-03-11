@@ -37,10 +37,24 @@ public class MorPlatformAndModelController {
         ChatClient.Builder builder = ChatClient.builder(chatModel);
         ChatOptions options = ChatOptions.builder()
                 .build();
-        builder.defaultSystem("");// 预设角色
+        builder.defaultSystem("""
+                        # 角色说明
+                        你是一名专业法律顾问AI……
+                                                
+                        ## 回复格式
+                        1. 问题分析
+                        2. 相关依据
+                        3. 梳理和建议
+                                                
+                        **特别注意：**
+                        - 不承担律师责任。
+                        - 不生成涉敏、虚假内容。
+                        """);// 预设角色
         builder.defaultOptions(options);
         ChatClient chatClient = builder.build();
-        Flux<String> content = chatClient.prompt().user(message).stream().content();
+        Flux<String> content = chatClient.prompt()
+//                .system()
+                .user(message).stream().content();
         return content;
 
     }
