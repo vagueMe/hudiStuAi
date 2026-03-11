@@ -37,7 +37,7 @@ public class MorPlatformAndModelController {
         ChatClient.Builder builder = ChatClient.builder(chatModel);
         ChatOptions options = ChatOptions.builder()
                 .build();
-        builder.defaultSystem("");//
+        builder.defaultSystem("");// 预设角色
         builder.defaultOptions(options);
         ChatClient chatClient = builder.build();
         Flux<String> content = chatClient.prompt().user(message).stream().content();
