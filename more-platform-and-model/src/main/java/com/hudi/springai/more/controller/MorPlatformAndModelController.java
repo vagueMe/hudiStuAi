@@ -7,6 +7,9 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.deepseek.DeepSeekChatModel;
 import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,11 +26,15 @@ public class MorPlatformAndModelController {
             DashScopeChatModel dashScopeChatModel,
             DeepSeekChatModel deepSeekChatModel,
             OllamaChatModel ollamaChatModel
+
     ) {
         platforms.put("dashscope", dashScopeChatModel);
         platforms.put("ollama", ollamaChatModel);
         platforms.put("deepseek", deepSeekChatModel);
     }
+
+    @Value("classpath:files/prompt.st")
+    private Resource resource;
 
     @RequestMapping(value="/chat",produces = "text/stream;charset=UTF-8")
     public Flux<String> chat(
@@ -37,19 +44,7 @@ public class MorPlatformAndModelController {
         ChatClient.Builder builder = ChatClient.builder(chatModel);
         ChatOptions options = ChatOptions.builder()
                 .build();
-        builder.defaultSystem("""
-                        # 角色说明
-                        你是一名专业法律顾问AI……
-                                                
-                        ## 回复格式
-                        1. 问题分析
-                        2. 相关依据
-                        3. 梳理和建议
-                                                
-                        **特别注意：**
-                        - 不承担律师责任。
-                        - 不生成涉敏、虚假内容。
-                        """);// 预设角色
+        builder.defaultSystem(resource);// 预设角色
         builder.defaultOptions(options);
         ChatClient chatClient = builder.build();
         Flux<String> content = chatClient.prompt()
