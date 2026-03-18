@@ -1,14 +1,14 @@
 package com.hudi.springai.more.controller;
 
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
-import com.hudi.springai.more.opts.MorePlatformAndModelOptions;
+import com.hudi.springai.more.advisors.ReReadingAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.deepseek.DeepSeekChatModel;
 import org.springframework.ai.ollama.OllamaChatModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,14 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 public class MorPlatformAndModelController {
 
-    HashMap<String, ChatModel> platforms=new HashMap<>();
+    HashMap<String, ChatModel> platforms = new HashMap<>();
 
-    private Map<String , ChatClient> chatClientMap;
+    private Map<String, ChatClient> chatClientMap;
 
     public MorPlatformAndModelController(
             DashScopeChatModel dashScopeChatModel,
@@ -40,12 +41,12 @@ public class MorPlatformAndModelController {
     @Value("classpath:files/prompt.st")
     private Resource resource;
 
-    @RequestMapping(value="/chat",produces = "text/stream;charset=UTF-8")
+    @RequestMapping(value = "/chat", produces = "text/stream;charset=UTF-8")
     public Flux<String> chat(
             @RequestParam(defaultValue = "你好，你是谁") String message,
-            @RequestParam(defaultValue = "dashscope")  String platform){
+            @RequestParam(defaultValue = "dashscope") String platform) {
         ChatClient chatClient = this.initChatClient(platform);
-       return chatClient.prompt()
+        return chatClient.prompt()
 //                .system()
                 .user(message).stream().content();
 
@@ -65,7 +66,11 @@ public class MorPlatformAndModelController {
                     .build();
             builder.defaultSystem(resource);// 预设角色
             builder.defaultOptions(options);
-            builder.defaultAdvisors(new SimpleLoggerAdvisor());
+            builder.defaultAdvisors(List.of(
+                    new SimpleLoggerAdvisor(),
+                    new SafeGuardAdvisor(List.of("政治")),
+                    new ReReadingAdvisor()
+            ));
             ChatClient chatClient = builder.build();
             chatClientMap.put(platform, chatClient);
             return chatClient;
