@@ -1,16 +1,14 @@
 spring:
     application:
         name: quick-start
-    profiles:
-        active: dev
     ai:
         deepseek:
-            api-key: xxxxxx
+            api-key: ${ai_key_ds}
             chat:
                 options:
                     model: deepseek-reasoner
         dashscope:
-            api-key: XXXXXX
+            api-key: ${ai_key_qw}
             chat:
                 options:
                     model: qwen3-max
