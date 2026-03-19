@@ -46,6 +46,12 @@ public class MorPlatformAndModelController {
     @Value("classpath:files/prompt.st")
     private Resource resource;
 
+    @Value("${spring.datasource.url}")
+    private String mysalurl;
+
+    @Value("${spring.datasource.password}")
+    private String mysalname;
+
     @Autowired
     private ChatMemory chatMemory;
 

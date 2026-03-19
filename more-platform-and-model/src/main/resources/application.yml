@@ -1,6 +1,11 @@
 spring:
     application:
         name: more-platform-and-model
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ${a_mysql_url}
+        username: root
+        password: ${a_mysql_password}
     ai:
         deepseek:
             api-key: ${ai_key_ds}
@@ -14,6 +19,12 @@ spring:
                     model: qwen3-max
             base-url: https://dashscope.aliyuncs.com
 #            base-url: https://dashscope.aliyuncs.com/api/v1
+        chat:
+            memory:
+                repository:
+                    jdbc:
+                        initialize-schema: always
+                        schema: classpath:org/springframework/ai/chat/memory/repository/jdbc/schema-mysql.sql
 logging:
     level:
         org.springframework.ai.chat.client.advisor: debug

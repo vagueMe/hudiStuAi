@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
  * @author hudi
  * @date 19 3月 2026 15:45
  */
-@Configuration
+//@Configuration
 public class ChatMemoryBeanConfig {
 
-    @Bean
+//    @Bean
     public ChatMemory chatMemory(ChatMemoryRepository repository) {
         return MessageWindowChatMemory.builder()
                 .maxMessages(20)
