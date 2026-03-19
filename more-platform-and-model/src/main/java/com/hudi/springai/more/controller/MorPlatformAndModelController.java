@@ -3,10 +3,13 @@ package com.hudi.springai.more.controller;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import com.hudi.springai.more.advisors.ReReadingAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.ChatOptions;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.deepseek.DeepSeekChatModel;
 import org.springframework.ai.model.chat.client.autoconfigure.ChatClientAutoConfiguration;
 import org.springframework.ai.ollama.OllamaChatModel;
@@ -43,13 +46,16 @@ public class MorPlatformAndModelController {
     @Value("classpath:files/prompt.st")
     private Resource resource;
 
+    @Autowired
+    private ChatMemory chatMemory;
+
     @RequestMapping(value = "/chat", produces = "text/stream;charset=UTF-8")
     public Flux<String> chat(
             @RequestParam(defaultValue = "你好，你是谁") String message,
-            @RequestParam(defaultValue = "dashscope") String platform) {
+            @RequestParam(defaultValue = "dashscope") String platform, @RequestParam(defaultValue = "1") String id) {
         ChatClient chatClient = this.initChatClient(platform);
         return chatClient.prompt()
-//                .system()
+                .advisors( i -> i.param(ChatMemory.CONVERSATION_ID,id))
                 .user(message).stream().content();
 
     }
@@ -71,7 +77,8 @@ public class MorPlatformAndModelController {
             builder.defaultAdvisors(List.of(
                     new SimpleLoggerAdvisor(),
                     new SafeGuardAdvisor(List.of("政治")),
-                    new ReReadingAdvisor()
+//                    new ReReadingAdvisor(),
+                    PromptChatMemoryAdvisor.builder(chatMemory).build()
             ));
             ChatClient chatClient = builder.build();
             chatClientMap.put(platform, chatClient);
