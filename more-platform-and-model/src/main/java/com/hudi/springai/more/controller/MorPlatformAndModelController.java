@@ -49,8 +49,19 @@ public class MorPlatformAndModelController {
     @Autowired
     private ChatMemory chatMemory;
 
-    @RequestMapping(value = "/chat", produces = "text/stream;charset=UTF-8")
-    public Flux<String> chat(
+    @RequestMapping(value = "/chat", produces = "text/plain;charset=UTF-8")
+    public String chat(
+            @RequestParam(defaultValue = "你好，你是谁") String message,
+            @RequestParam(defaultValue = "dashscope") String platform, @RequestParam(defaultValue = "1") String id) {
+        ChatClient chatClient = this.initChatClient(platform);
+         return chatClient.prompt()
+                .advisors( i -> i.param(ChatMemory.CONVERSATION_ID,id))
+                .user(message).call().content();
+
+    }
+
+    @RequestMapping(value = "/stream", produces = "text/stream;charset=UTF-8")
+    public Flux<String> stream(
             @RequestParam(defaultValue = "你好，你是谁") String message,
             @RequestParam(defaultValue = "dashscope") String platform, @RequestParam(defaultValue = "1") String id) {
         ChatClient chatClient = this.initChatClient(platform);
