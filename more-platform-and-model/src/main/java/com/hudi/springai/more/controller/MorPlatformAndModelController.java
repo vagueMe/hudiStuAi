@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("client")
 public class MorPlatformAndModelController {
 
     HashMap<String, ChatModel> platforms = new HashMap<>();
@@ -45,12 +46,6 @@ public class MorPlatformAndModelController {
 
     @Value("classpath:files/prompt.st")
     private Resource resource;
-
-    @Value("${spring.datasource.url}")
-    private String mysalurl;
-
-    @Value("${spring.datasource.password}")
-    private String mysalname;
 
     @Autowired
     private ChatMemory chatMemory;
