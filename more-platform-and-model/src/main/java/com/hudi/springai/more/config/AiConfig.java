@@ -32,7 +32,7 @@ public class AiConfig {
                         ## 2. 任务
                         ### 2.1 JobType:退票(CANCEL) 要求用户提供姓名和预定号， 或者从对话中提取；
                         ### 2.2 JobType:查票(QUERY) 要求用户提供预定号， 或者从对话中提取；
-                        ### 2.3 JobType:其他(OTHER)
+                        ### 2.3 JobType:其他(OTHER), 则按用户需求进行回复
                         """)
                 .defaultAdvisors(
                         MessageChatMemoryAdvisor.builder(chatMemory).build(),

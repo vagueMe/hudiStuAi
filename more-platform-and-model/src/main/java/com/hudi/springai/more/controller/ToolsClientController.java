@@ -32,7 +32,8 @@ public class ToolsClientController {
 //        sink.tryEmitNext("正在计划任务...<br/>");
         planningChatClient.prompt().user(message)
                 .advisors(i -> i.param(ChatMemory.CONVERSATION_ID, id))
-                .tools(toolService)
+//                .tools(toolService)
+                .toolCallbacks(toolService.getToolCallList(toolService))
                 .stream().content().doOnNext(sink::tryEmitNext)
                 .doOnComplete(sink::tryEmitComplete)
                 .subscribe();
